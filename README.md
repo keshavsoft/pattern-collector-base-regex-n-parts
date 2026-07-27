@@ -19,7 +19,8 @@
 
 Depending on the configured `nParts` parameter, the utility extracts captured groups into structured formats:
 *   **3-Parts mode (`nParts: 3`)**: Extracts three captured groups as `part1`, `part2`, and `part3`.
-*   **2-Parts mode (default)**: Extracts two captured groups mapping the first group to `variable`/`poka` and the second group to `folderName`/`raka`.
+*   **2-Parts mode (`nParts: 2`)**: Extracts two captured groups as `part1` and `part2`.
+*   **Default mode**: Extracts two captured groups mapping the first group to `variable`/`poka` and the second group to `folderName`/`raka`.
 
 ---
 
@@ -49,7 +50,7 @@ An options object containing:
 
 *   **`matchLine`** `(string)`: The raw text line to match (e.g., an import or route usage line).
 *   **`parseRegex`** `(RegExp)`: A regular expression with capture groups.
-*   **`nParts`** `(number)` *(optional)*: The number of captured parts to extract. If set to `3`, it expects 3 capture groups. Otherwise, defaults to extracting 2 capture groups.
+*   **`nParts`** `(number)` *(optional)*: The number of captured parts to extract. If set to `3`, it returns three capture groups. If set to `2`, it returns two capture groups. Otherwise, defaults to returning variable/folderName mapping (2 parts).
 *   **`showLog`** `(boolean)` *(optional)*: Whether to print debug logs.
 
 #### Returns
@@ -63,7 +64,14 @@ An options object containing:
           part3: string  // Third capture group
         }
         ```
-    *   If `nParts` is not `3` (default) and a match is found:
+    *   If `nParts` is `2` and a match is found:
+        ```javascript
+        {
+          part1: string, // First capture group
+          part2: string  // Second capture group
+        }
+        ```
+    *   If `nParts` is not `2` or `3` (default) and a match is found:
         ```javascript
         {
           variable: string,   // First capture group (alias: poka)
