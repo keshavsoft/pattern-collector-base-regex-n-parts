@@ -14,9 +14,7 @@ const res = defaultFunc({
 console.log("Default case result: ", res);
 assert.deepStrictEqual(res, {
     variable: 'routerFromv1',
-    folderName: 'v1',
-    raka: 'v1',
-    poka: 'routerFromv1'
+    folderName: 'v1'
 });
 
 console.log("V6 Default Case Tests passed successfully!");

@@ -20,7 +20,7 @@
 Depending on the configured `nParts` parameter, the utility extracts captured groups into structured formats:
 *   **3-Parts mode (`nParts: 3`)**: Extracts three captured groups as `part1`, `part2`, and `part3`.
 *   **2-Parts mode (`nParts: 2`)**: Extracts two captured groups as `part1` and `part2`.
-*   **Default mode**: Extracts two captured groups mapping the first group to `variable`/`poka` and the second group to `folderName`/`raka`.
+*   **Default mode**: Extracts two captured groups mapping the first group to `variable` and the second group to `folderName`.
 
 ---
 
@@ -75,10 +75,8 @@ An options object containing:
     *   If `nParts` is not `2` or `3` (default) and a match is found:
         ```javascript
         {
-          variable: string,   // First capture group (alias: poka)
-          folderName: string, // Second capture group (alias: raka)
-          raka: string,       // Second capture group
-          poka: string        // First capture group
+          variable: string,   // First capture group
+          folderName: string  // Second capture group
         }
         ```
     *   If there is no match or input is invalid, it returns `{ KReason: string }`.
@@ -130,9 +128,7 @@ console.log(result);
 Output:
 {
   variable: 'routerFromv1',
-  folderName: 'v1',
-  raka: 'v1',
-  poka: 'routerFromv1'
+  folderName: 'v1'
 }
 */
 ```

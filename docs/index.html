@@ -278,6 +278,7 @@
       }
 
       .input-group input,
+      .input-group select,
       .input-group textarea {
          background: #05070f;
          border: 1px solid var(--border-color);
@@ -291,7 +292,13 @@
          transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
 
+      .input-group select {
+         font-family: 'Inter', sans-serif;
+         cursor: pointer;
+      }
+
       .input-group input:focus,
+      .input-group select:focus,
       .input-group textarea:focus {
          border-color: var(--accent);
          box-shadow: 0 0 0 3px var(--accent-glow);
@@ -431,14 +438,14 @@
 
             <!-- Card 2: Basic Concept -->
             <section class="card" id="concept-section">
-               <h2>💡 Concept (Raka & Poka)</h2>
+               <h2>💡 Concept (Variable & Folder Name)</h2>
                <p>For any given input matching line, the utility maps the first two regular expression captured groups to standardized properties:</p>
                <ul style="margin-left: 20px; font-size: 14px; margin-bottom: 20px; color: var(--text-secondary);">
-                  <li><strong>variable / poka:</strong> First captured group (representing the input variable or alias name).</li>
-                  <li><strong>folderName / raka:</strong> Second captured group (representing the output folder name or directory).</li>
+                  <li><strong>variable:</strong> First captured group (representing the input variable name).</li>
+                  <li><strong>folderName:</strong> Second captured group (representing the output folder name or directory).</li>
                </ul>
                <div class="alert alert-info">
-                  The name aliases <code>poka</code> and <code>raka</code> represent the input parameter and output folder respectively, guaranteeing self-contained matching logic from the input string alone.
+                  The returned object maps these properties, guaranteeing self-contained matching logic from the input string alone.
                </div>
             </section>
          </div>
@@ -446,7 +453,7 @@
          <!-- Usage Section -->
          <div class="grid" style="grid-template-columns: 1fr;">
             <section class="card" id="usage-section">
-               <h2>🛠️ API & Usage Example (v3)</h2>
+               <h2>🛠️ API & Usage Example (v6)</h2>
                <p>Here is how the default exported function works when called. Pass an options object containing <code>matchLine</code>, <code>parseRegex</code>, and optional <code>showLog</code>.</p>
                <pre><button class="copy-btn" onclick="copyCode(this)" id="copy-usage-btn">Copy</button><code>import patternCollectorBaseRegex from 'pattern-collector-base-regex';
 
@@ -466,9 +473,7 @@ console.log(result);
 Output:
 {
   variable: 'routerFromv1',
-  folderName: 'v1',
-  raka: 'v1',
-  poka: 'routerFromv1'
+  folderName: 'v1'
 }
 */</code></pre>
             </section>
@@ -488,6 +493,17 @@ Output:
                <div class="input-group">
                   <label for="regex-pattern-input">Regex Pattern (must contain capture groups)</label>
                   <input type="text" id="regex-pattern-input" value="/import\s*\{[^}]*router\s+as\s+(\w+)[^}]*\}\s*from\s*['&quot;]\.\/([^/]+)\/.*['&quot;]/">
+               </div>
+
+               <div class="input-group">
+                  <label for="nparts-input">nParts (Optional - Number of Parts)</label>
+                  <select id="nparts-input">
+                     <option value="default">Default Case (Returns variable, folderName)</option>
+                     <option value="2">2 Parts (Returns part1, part2)</option>
+                     <option value="3">3 Parts (Returns part1, part2, part3)</option>
+                     <option value="1">1 Part (Triggers Guard Error)</option>
+                     <option value="4">4 Parts (Triggers Guard Error)</option>
+                  </select>
                </div>
 
                <div class="input-group input-group-checkbox">
@@ -531,11 +547,30 @@ Output:
          return new RegExp(str);
       }
 
+      function checkGuards(matchLine, parseRegex, nParts) {
+         if (typeof matchLine !== 'string') {
+            return { KReason: "matchLine is not a string" };
+         }
+         if (!(parseRegex instanceof RegExp)) {
+            return { KReason: "parseRegex must be a RegExp" };
+         }
+         if (nParts !== undefined && nParts !== 2 && nParts !== 3) {
+            return { KReason: "nParts must be 2 or 3" };
+         }
+         return null;
+      }
+
       function runExtractor() {
          const matchLineValue = document.getElementById('match-line-input').value;
          const regexPatternValue = document.getElementById('regex-pattern-input').value;
+         const nPartsValueRaw = document.getElementById('nparts-input').value;
          const showLog = document.getElementById('show-log-input').checked;
          const resultBox = document.getElementById('playground-output');
+
+         let nParts;
+         if (nPartsValueRaw !== "default") {
+            nParts = parseInt(nPartsValueRaw);
+         }
 
          if (showLog) {
             console.log("matchLine : ", matchLineValue);
@@ -543,20 +578,43 @@ Output:
 
          try {
             const parseRegex = parseRegExpString(regexPatternValue);
+            
+            // Execute guards
+            const guardError = checkGuards(matchLineValue, parseRegex, nParts);
+            if (guardError) {
+               resultBox.innerHTML = `<span style="color: #f87171;">Guard Error Triggered!</span>\n\n` + JSON.stringify(guardError, null, 2);
+               return;
+            }
+
             const clean = matchLineValue.replace(/[\r\n]/g, '');
             const parts = clean.match(parseRegex);
 
-            if (parts) {
-               const output = {
-                  variable: parts[1] || null,
-                  folderName: parts[2] || null,
-                  raka: parts[2] || null,
-                  poka: parts[1] || null
-               };
-               resultBox.innerHTML = `<span style="color: #34d399;">Match Found!</span>\n\n` + JSON.stringify(output, null, 2);
-            } else {
-               resultBox.innerHTML = `<span style="color: #f87171;">No match found.</span>`;
+            if (!parts) {
+               const mismatchResult = { KReason: `No match found for pattern: ${parseRegex}` };
+               resultBox.innerHTML = `<span style="color: #f87171;">Mismatch Result!</span>\n\n` + JSON.stringify(mismatchResult, null, 2);
+               return;
             }
+
+            let output;
+            if (nParts === 3) {
+               output = {
+                  part1: parts[1] || null,
+                  part2: parts[2] || null,
+                  part3: parts[3] || null
+               };
+            } else if (nParts === 2) {
+               output = {
+                  part1: parts[1] || null,
+                  part2: parts[2] || null
+               };
+            } else {
+               output = {
+                  variable: parts[1] || null,
+                  folderName: parts[2] || null
+               };
+            }
+
+            resultBox.innerHTML = `<span style="color: #34d399;">Success!</span>\n\n` + JSON.stringify(output, null, 2);
          } catch (error) {
             resultBox.innerHTML = `<span style="color: #f87171;">RegExp compilation/parsing error: ${error.message}</span>`;
          }

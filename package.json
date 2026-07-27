@@ -1,7 +1,7 @@
 {
   "name": "pattern-collector-base-regex",
-  "version": "1.6.2",
-  "description": "return as raka and poka, input and output",
+  "version": "1.6.3",
+  "description": "return as variable and folderName, input and output",
   "keywords": [
     "pattern",
     "regex",
