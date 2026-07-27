@@ -17,7 +17,7 @@ const latestModule = require(`./bin/${v}/index.js`);
  *                                    If set to 2, returns part1 and part2.
  *                                    Otherwise, defaults to returning variable/folderName mapping.
  * @param {boolean} [options.showLog] - Whether to log the matchLine to the console.
- * @returns {Object|null} The extracted parts object, or null if no match is found.
+ * @returns {Object} The extracted parts object, or { KReason: string } if no match is found or input is invalid.
  */
 const load = ({ matchLine, parseRegex, nParts, showLog }) => {
 

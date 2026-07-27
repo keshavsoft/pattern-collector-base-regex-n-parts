@@ -55,7 +55,7 @@ An options object containing:
 
 #### Returns
 
-*   `Object` | `null`: 
+*   `Object`: 
     *   If `nParts` is `3` and a match is found:
         ```javascript
         {
@@ -80,7 +80,7 @@ An options object containing:
           poka: string        // First capture group
         }
         ```
-    *   If there is no match or input is invalid, it returns `null`.
+    *   If there is no match or input is invalid, it returns `{ KReason: string }`.
 
 ---
 
