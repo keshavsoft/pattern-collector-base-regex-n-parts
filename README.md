@@ -28,6 +28,7 @@ Depending on the configured `nParts` parameter, the utility extracts captured gr
 
 *   **⚡ Zero Dependencies**: Light, fast, and secure.
 *   **📂 Configurable Group Extraction**: Easily switch between extracting 2 or 3 capture groups using the `nParts` option.
+*   **🛡️ Robust Parameter Guards**: Validates input parameter types and configurations, returning descriptive `{ KReason }` objects on failure.
 *   **📦 ESM Native**: Built for modern ES module environments.
 
 ---
@@ -104,9 +105,9 @@ console.log(result);
 /*
 Output:
 {
-  part3: 'funcFromshowAll',
+  part1: 'get',
   part2: 'showAll',
-  part1: 'get'
+  part3: 'funcFromshowAll'
 }
 */
 ```
@@ -134,6 +135,30 @@ Output:
   poka: 'routerFromv1'
 }
 */
+```
+
+---
+
+### Example 3: Handling Validation / Matching Failures (Returning KReason)
+
+```javascript
+import extractVariable from 'pattern-collector-base-regex';
+
+// 1. Invalid matchLine type
+const badMatchLine = extractVariable({
+  matchLine: 12345,
+  parseRegex: /regex/
+});
+console.log(badMatchLine);
+/* Output: { KReason: "matchLine is not a string" } */
+
+// 2. Pattern mismatch
+const mismatch = extractVariable({
+  matchLine: "some random string",
+  parseRegex: /router\.(get|post)/
+});
+console.log(mismatch);
+/* Output: { KReason: "No match found for pattern: /router\\.(get|post)/" } */
 ```
 
 ---
