@@ -1,6 +1,6 @@
 {
-  "name": "pattern-collector-base-regex",
-  "version": "1.6.3",
+  "name": "pattern-collector-base-regex-n-parts",
+  "version": "1.6.4",
   "description": "return as variable and folderName, input and output",
   "keywords": [
     "pattern",
@@ -22,12 +22,12 @@
     "README.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/keshavsoft/pattern-collector-base-regex#readme",
+  "homepage": "https://github.com/keshavsoft/pattern-collector-base-regex-n-parts#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/keshavsoft/pattern-collector-base-regex"
+    "url": "https://github.com/keshavsoft/pattern-collector-base-regex-n-parts"
   },
   "bugs": {
-    "url": "https://github.com/keshavsoft/pattern-collector-base-regex/issues"
+    "url": "https://github.com/keshavsoft/pattern-collector-base-regex-n-parts/issues"
   }
 }
