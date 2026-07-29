@@ -92,3 +92,14 @@ jobs:
             echo "* **<a href=\"https://github.com/keshavsoft/express-fix-any-js-from-for-consumption\" target=\"_blank\">express-fix-any-js-from-for-consumption</a>**: ❌ Failed to dispatch (HTTP $RESPONSE3)" >> $GITHUB_STEP_SUMMARY
             cat resp3.json >> $GITHUB_STEP_SUMMARY
           fi
+          RESPONSE4=$(curl -s -w "%{http_code}" -o resp3.json -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.REPO_DISPATCH_TOKEN }}" \
+            https://api.github.com/repos/keshavsoft/pattern-collector-base-regex-n-parts/dispatches \
+            -d '{"event_type":"dependency-updated"}')
+          if [ "$RESPONSE4" = "204" ]; then
+            echo "* **<a href=\"https://github.com/keshavsoft/pattern-collector-base-regex-n-parts\" target=\"_blank\">pattern-collector-base-regex-n-parts</a>**: ✅ Dispatched successfully (HTTP 204)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "* **<a href=\"https://github.com/keshavsoft/pattern-collector-base-regex-n-parts\" target=\"_blank\">pattern-collector-base-regex-n-parts</a>**: ❌ Failed to dispatch (HTTP $RESPONSE3)" >> $GITHUB_STEP_SUMMARY
+            cat resp3.json >> $GITHUB_STEP_SUMMARY
+          fi
