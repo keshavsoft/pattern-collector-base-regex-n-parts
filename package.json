@@ -1,6 +1,6 @@
 {
   "name": "pattern-collector-base-regex-n-parts",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "return as variable and folderName, input and output",
   "keywords": [
     "pattern",
